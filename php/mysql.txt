@@ -1,0 +1,81 @@
+SQLは全て大文字で記述
+
+SELECT * FROM items;
+・SELECT はテーブルの内容をみるという構文
+・* は全て
+・FROM はどこから
+・items テーブル名
+・そのため上記の構文は itemsテーブルの中身を全てみたいということ
+
+INSERT INTO items SET ID=100, name='商品100'
+・INSERT INTO はデータを挿入する意味
+・items　はデーブル名を指定
+・カラムと内容を記述
+
+CREATE TABLE my_items(id INT, item_name TEXT, price INT)
+・テーブルを作成する
+
+UPDATE my_items SET price=180 WHERE id=1;
+・データをアップデートする場合
+・WHERE でどのデータを書き換えるのかを指定する
+
+DELETE FROM my_items WHERE id=1
+・DELETE FROM　で指定のデータを削除する
+
+SELECT * FROM my_items WHERE keyword LIKE '%赤い%'
+・keyword　カラム名
+・％ はなんでも良い。甘い意外に文字が入っててもヒットする曖昧検索
+・'赤い%'　前の%を消すと「赤い」キーワードが先頭にあるものだけを検索できる
+
+SELECT * FROM my_items WHERE price >= 100 AND price < 150
+・AND　は論理演算子
+・OR　もある
+
+SELECT MAX(price) FROM my_items　
+・テーブルの中から一番大きい price を表示する
+・MAX　の部分を MIN にすると小さい価格、SUM にすると合計価格を表示する
+・COUNT だと件数、AVG 平均値を表示できる
+
+SELECT * FROM makers, my_items WHERE my_items.id=1 AND makers.id=my_items.maker_id
+・リレーションを行う場合、リレーションする全てのテーブルを記載
+・makers.id=my_items.maker_id でリレーションを行っている
+
+SELECT * FROM my_items ORDER BY id ASC
+・ORDER BY は並び順を指定する
+・ASC Ascending の略で昇順
+・DESC Descending の略で降順
+・id カラムの小さい順に取り出す
+
+SELECT * FROM my_items WHERE price <= 180 ORDER BY price
+・WHERE と組み合わせる場合は、ORDER BY を後に記述
+・180以下の価格を表示するコード
+
+SELECT item_id, SUM(count) FROM carts GROUP BY item_id
+・グループごとの合計を表示する
+・GROUP BY の指定したカラムが SELECT に入っていないといけない
+
+SELECT item_name, SUM(count) FROM my_items, carts WHERE my_items.id=carts.item_id GROUP BY item_id
+・グループごとの合計を表示する
+・名前でグループ表示ができる
+・WHERE と組み合わせる場合は、GROUP BY を後に記述
+
+SELECT item_name, SUM(count) FROM my_items LEFT JOIN carts ON my_items.id=carts.item_id GROUP BY carts.item_id
+・NILLも表示できるコード
+・LEFT JOIN を使用しる場合、 ON も一緒に記述が必要
+
+SELECT * FROM my_items WHERE price BETWEEN 50 AND 149
+・カラムが５０〜１４９の間に収まっているカラムを表示する
+
+SELECT * FROM my_items WHERE id IN (1,3)
+・表示したいカラムを検索する
+
+SELECT * FROM carts LIMIT 3
+・最初から３件目まで表示できる
+・LIMIT 2,3　にすると２件目から３件表示できる
+
+
+
+
+
+
+
