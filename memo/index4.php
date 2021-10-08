@@ -52,6 +52,22 @@
     </time>
     <hr>
   <?php endwhile ?>
+  <?php if ($page >= 2): ?>
+    <a href="index.php?page=<?php print($page-1); ?>"><?php print($page-1); ?>ページ目へ</a>
+    |
+  <?php endif; ?>
+
+  <?php
+    // as で別名にし、cnt で取り出せるようにする
+    $count = $db->query('SELECT COUNT(*) as cnt FROM memos');
+    $count = $count->fetch();
+    // ceilは切り上げる意味、$countを５で割ると少数に(例： 6 / 5 =1.2 で２を切り上げると２になる)なるためそれを切り上げて次の値にする
+    $max_page = ceil($count['cnt'] / 5);
+    
+    if ($page < $max_page):
+  ?>
+    <a href="index.php?page=<?php print($page+1); ?>"><?php print($page+1); ?>ページ目へ</a>
+  <?php endif; ?>
 </article>
 </main>
 </body>
