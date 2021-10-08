@@ -26,11 +26,11 @@
 
   $memos = $db->query('SELECT * FROM memos ORDER BY id DESC');
   ?>
-  
+
 <article>
   <?php while ($memo = $memos->fetch()): ?>
     <p>
-      <a href="#">
+      <a href="memo.php?id=<?php print($memo['id']); ?>">
         <?php
           // mb_substr($memo['memo'],0 , 50 は文字を０文字から５０文字まで表示するコード
           print(mb_substr($memo['memo'],0 , 50 ));
