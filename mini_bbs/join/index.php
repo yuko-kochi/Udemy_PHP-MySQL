@@ -2,7 +2,7 @@
 // 入力された内容を保存用の$_SESSIONを使用するため、
 session_start();
 
-// !empty($_POST)で　form が送信されているかどうか、空ではない時に命令
+// !empty($_POST)で　form が送信されているかどうか、空ではない時にエラーメッセージを命令
 if (!empty($_POST)) {
 	if ($_POST['name'] === ''){
 		$error['name'] = 'blank';
@@ -18,10 +18,27 @@ if (!empty($_POST)) {
 		$error['password'] = 'blank';
 	}
 
+	$fileName = $_FILES['image']['name'];
+	// 画像の拡張子を確認
+	// !empty($fileName)　で画像がアップロードされていれば実行
+	if (!empty($fileName)) {
+		// substr($fileName, -3); でファイルの後ろ３文字を指定
+		$ext = substr($fileName, -3);
+		// ファイルの後ろ３文字が画像の拡張子が以下以外ならエラーメッセージを実行
+		if ($ext != 'jpg' && $ext != 'gif' && $ext != 'png') {
+			$error['image'] = 'type';
+		}
+	}
+
 	// empty() は配列の中が空であるか判断する
 	if (empty($error)) {
+		$image = date('YmdHis') . $_FILES['image']['name'];
+		// move_uploaded_fileはファイル保存するコード
+		// ../member_picture/ 保存場所
+		move_uploaded_file($_FILES['image']['tmp_name'], '../member_picture/' . $image);
 		// 入力された内容を保存
 		$_SESSION['join'] = $_POST;
+		$_SESSION['join']['image'] = $image;
 		// check.php にジャンプする命令
 		header('Location: check.php');
 		exit();
@@ -53,6 +70,7 @@ if ($_REQUEST['action'] == 'rewrite' && isset($_SESSION['join'])) {
 
 <div id="content">
 	<p>次のフォームに必要事項をご記入ください。</p>
+	<!-- enctype="multipart/form-data" はファイルのアップロードが必要な場合は記述する -->
 	<form action="" method="post" enctype="multipart/form-data">
 		<dl>
 
@@ -101,6 +119,12 @@ if ($_REQUEST['action'] == 'rewrite' && isset($_SESSION['join'])) {
 			<dt>写真など</dt>
 			<dd>
 				<input type="file" name="image" size="35" value="test"  />
+				<?php if ($error['image'] === 'type'): ?>
+					<p class="error">* 写真などは[.gif]または[.jpg]、[.png]の画像を指定してください</p>
+				<?php endif; ?>
+				<?php if (!empty($error)): ?>
+					<p class="error">* 恐れ入りますが画像を改めて指定してください</p>
+				<?php endif; ?>
 			</dd>
 
 		</dl>
