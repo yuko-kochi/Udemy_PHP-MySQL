@@ -2,7 +2,14 @@
   session_start();
   require('dbconnect.php');
 
+  // cookieに値が入っているか判断
+  if ($_COOKIE['email'] !== '') {
+    $email = $_COOKIE['email'];
+  }
+
   if (!empty($_POST)) {
+    // cookieの値を更新
+    $email = $_POST['email'];
     if ($_POST['email'] !== '' && $_POST['password'] !== '') {
       $login = $db->prepare('SELECT * FROM members WHERE email=? AND password=?');
       $login->execute(array(
@@ -10,6 +17,11 @@
         sha1($_POST['password'])
       ));
       $member = $login->fetch();
+
+      // cookieにメールアドレスを保存
+      if ($_POST['save'] === 'on') {
+        setcookie('email', $_POST['email'], time()+60*60*24*14);
+      }
 
       if ($member) {
         $_SESSION['id'] = $member['id'];
@@ -50,7 +62,7 @@
         <dt>メールアドレス</dt>
         <dd>
           <input type="text" name="email" size="35" maxlength="255"
-          value="<?php echo htmlspecialchars($_POST['email'], ENT_QUOTES); ?>" />
+          value="<?php echo htmlspecialchars($email, ENT_QUOTES); ?>" />
           <?php if($error['login'] === 'blank'): ?>
             <p class="error">* メールアドレスとパスワードをご記入ください
           <?php endif; ?>
