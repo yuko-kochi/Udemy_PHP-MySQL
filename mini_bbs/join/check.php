@@ -1,3 +1,14 @@
+<?php
+ session_start();
+
+//  $_SESSION['join']に内容が入っていない場合に実行
+ if (!isset($_SESSION['join'])) {
+	// 入力内容がない場合はindex.phpに強制的に移行する
+	header('Location: index.php');
+	exit();
+ }
+?>
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -21,10 +32,19 @@
 	<dl>
 		<dt>ニックネーム</dt>
 		<dd>
-        </dd>
+			<?php
+				// htmlspecialchars安全に画面に出力するためのファンクション
+				// index.php で $_POSTを$_SESSION['join']に入れているため、$_SESSION['join']['name']になる
+				// $_SESSION['join'] = $_POST
+				print(htmlspecialchars($_SESSION['join']['name'], ENT_QUOTES));
+			?>
+    </dd>
 		<dt>メールアドレス</dt>
 		<dd>
-        </dd>
+		<?php
+				print(htmlspecialchars($_SESSION['join']['email'], ENT_QUOTES));
+			?>
+    </dd>
 		<dt>パスワード</dt>
 		<dd>
 		【表示されません】

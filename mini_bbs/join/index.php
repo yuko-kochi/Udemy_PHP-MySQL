@@ -1,4 +1,7 @@
 <?php
+// 入力された内容を保存用の$_SESSIONを使用するため、
+session_start();
+
 // !empty($_POST)で　form が送信されているかどうか、空ではない時に命令
 if (!empty($_POST)) {
 	if ($_POST['name'] === ''){
@@ -17,10 +20,18 @@ if (!empty($_POST)) {
 
 	// empty() は配列の中が空であるか判断する
 	if (empty($error)) {
+		// 入力された内容を保存
+		$_SESSION['join'] = $_POST;
 		// check.php にジャンプする命令
 		header('Location: check.php');
 		exit();
 	}
+}
+
+// 描き直しページに移行した場合 $_SESSION['join'] を代入する
+// && isset($_SESSION['join'] でセッションが正しく設定されているかも判断
+if ($_REQUEST['action'] == 'rewrite' && isset($_SESSION['join'])) {
+	$_POST = $_SESSION['join'];
 }
 ?>
 
