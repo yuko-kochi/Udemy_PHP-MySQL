@@ -2,6 +2,9 @@
 // 入力された内容を保存用の$_SESSIONを使用するため、
 session_start();
 
+require('../dbconnect.php');
+
+// =======エラーメッセージ表示=======
 // !empty($_POST)で　form が送信されているかどうか、空ではない時にエラーメッセージを命令
 if (!empty($_POST)) {
 	if ($_POST['name'] === ''){
@@ -29,7 +32,21 @@ if (!empty($_POST)) {
 			$error['image'] = 'type';
 		}
 	}
+	// =================================
 
+
+	// =======アカウントの重複チェック=======
+	if(empty($error)){
+    $member = $db->prepare('SELECT COUNT(*) AS cnt FROM members WHERE email=?');
+    $member->execute(array($_POST['email']));
+    $record = $member->fetch();
+    if($record['cnt']> 0){
+        $error['email'] = 'duplicate';
+    }
+	}
+	// =================================
+
+	// =======エラーがないかチェック=======
 	// empty() は配列の中が空であるか判断する
 	if (empty($error)) {
 		$image = date('YmdHis') . $_FILES['image']['name'];
@@ -43,6 +60,7 @@ if (!empty($_POST)) {
 		header('Location: check.php');
 		exit();
 	}
+	// =================================
 }
 
 // 描き直しページに移行した場合 $_SESSION['join'] を代入する
@@ -97,6 +115,9 @@ if ($_REQUEST['action'] == 'rewrite' && isset($_SESSION['join'])) {
 				?>" />
 				<?php if ($error['email'] === 'blank'): ?>
 					<p class="error">* メールアドレスを入力してください</p>
+				<?php endif; ?>
+				<?php if ($error['email'] === 'duplicate'): ?>
+					<p class="error">* 指定されたメールアドレスは既に登録されています</p>
 				<?php endif; ?>
 			</dd>
 
