@@ -1,12 +1,28 @@
 <?php
- session_start();
+	session_start();
+	require('../dbconnect.php');
 
-//  $_SESSION['join']に内容が入っていない場合に実行
- if (!isset($_SESSION['join'])) {
-	// 入力内容がない場合はindex.phpに強制的に移行する
-	header('Location: index.php');
-	exit();
- }
+	//  $_SESSION['join']に内容が入っていない場合に実行
+	if (!isset($_SESSION['join'])) {
+		// 入力内容がない場合はindex.phpに強制的に移行する
+		header('Location: index.php');
+		exit();
+	}
+
+	if (!empty($_POST)) {
+		$statement = $db->prepare('INSERT INTO members SET name=?, email=?, password=?, picture=?, created=NOW()');
+		$statement->execute(array(
+			$_SESSION['join']['name'],
+			$_SESSION['join']['email'],
+			sha1($_SESSION['join']['password']),
+			$_SESSION['join']['image']
+		));
+		// unsetで使用したらすぐに削除する
+		unset($_SESSION['join']);
+
+		header('Location: thanks.php');
+		exit();
+	}
 ?>
 
 <!DOCTYPE html>
