@@ -28,7 +28,7 @@
         $_POST['message'],
         $_POST['reply_post_id']
       ));
-      
+
       // メッセージを投稿が終わったあと、index.phpを呼び出し、メッセージを重複しないようにする
       header('Location: index.php');
       exit();
@@ -98,9 +98,14 @@
           [<a href="index.php?res=<?php echo htmlspecialchars($post['id'], ENT_QUOTES); ?>">Re</a>]
         </p>
         <p class="day">
-          <a href="view.php?id="><?php echo htmlspecialchars($post['created'], ENT_QUOTES); ?></a>
-          <a href="view.php?id=">
-          返信元のメッセージ</a>
+          <a href="view.php?id=<?php echo htmlspecialchars($post['id']); ?>"><?php echo htmlspecialchars($post['created'], ENT_QUOTES); ?></a>
+
+          <!-- 返信元のメッセージがある場合は表示 -->
+          <?php if ($post['reply_message_id'] > 0): ?>
+            <a href="view.php?id=<?php echo htmlspecialchars($post['reply_message_id']); ?>">
+            返信元のメッセージ</a>
+          <?php endif ?>
+          
           [<a href="delete.php?id="
           style="color: #F33;">削除</a>]
         </p>
