@@ -104,10 +104,13 @@
           <?php if ($post['reply_message_id'] > 0): ?>
             <a href="view.php?id=<?php echo htmlspecialchars($post['reply_message_id']); ?>">
             返信元のメッセージ</a>
-          <?php endif ?>
-          
-          [<a href="delete.php?id="
-          style="color: #F33;">削除</a>]
+          <?php endif; ?>
+
+          <!-- 自身のメッセージのみ削除リンクを表示 -->
+          <?php if($_SESSION['id'] == $post['member_id']): ?>
+            [<a href="delete.php?id=<?php echo htmlspecialchars($post['id']); ?>"
+            style="color: #F33;">削除</a>]
+          <?php endif; ?>
         </p>
       </div>
     <?php endforeach ?>
